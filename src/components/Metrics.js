@@ -48,25 +48,8 @@ const subscriptionQuery = `
   }
 `;
 
-const MetricLive = () => {
-  
-  const [result] = useSubscription({ query: subscriptionQuery });
-  
-  const {data, error} = result;
-  
-  if(error){
-    return <div>Error loading subscription.</div>;
-  }
-  
-  console.log(data);
-  
-  return (
-    <div>Live Data:</div>
-  );
-};
-
-const MetricChart = () => {
-  // const [metrics, setMetrics] = useState([]);
+const MetricList = () => {
+  const [metrics, setMetrics] = useState([]);
   
   const [result] = useQuery({
     query,
@@ -87,14 +70,33 @@ const MetricChart = () => {
     return <div>hi</div>;
   };
   
+  console.log(metrics);
+  
   return (
     <div>
       <div>
         {data.getMetrics.map((metric, index) => <div key={index}>{metric}</div>)}
         {renderSelector()}
-        <MetricSelect metrics={data.getMetrics} />
+        <MetricSelect metricList={data.getMetrics} selectedMetrics={metrics} setMetrics={setMetrics} />
       </div>
     </div>
+  );
+};
+
+const MetricChart = () => {
+  
+  const [result] = useSubscription({ query: subscriptionQuery });
+  
+  const {data, error} = result;
+  
+  if(error){
+    return <div>Error loading subscription.</div>;
+  }
+  
+  console.log(data);
+  
+  return (
+    <div>Live Data:</div>
   );
 };
 
@@ -103,8 +105,8 @@ export default () => {
   return (
     <div>
       <Provider value={client}>
+        <MetricList />
         <MetricChart />
-        <MetricLive />
       </Provider>
     </div>
   );
