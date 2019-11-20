@@ -27,13 +27,13 @@ const theme = createMuiTheme({
 const App = () => (
   <MuiThemeProvider theme={theme}>
     <CssBaseline />
-    <Provider store={store}>
-      <Wrapper>
-        <Header />
-        <Metrics />
-        <ToastContainer />
-      </Wrapper>
-    </Provider>
+      <Provider store={store}>
+          <Wrapper>
+            <Header />
+            <Metrics />
+            <ToastContainer />
+          </Wrapper>
+      </Provider>
   </MuiThemeProvider>
 );
 
