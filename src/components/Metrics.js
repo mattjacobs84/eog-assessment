@@ -11,10 +11,13 @@ import { SubscriptionClient } from 'subscriptions-transport-ws';
 // import ListItemText from '@material-ui/core/ListItemText';
 // import { makeStyles } from '@material-ui/core/styles';
 import MetricSelect from './MetricSelect';
+import Chip from './Chip';
 
 // const useStyles = makeStyles({
 
 // });
+
+const now = new Date();
 
 const subscriptionClient = new SubscriptionClient(
 'wss://react.eogresources.com/graphql',
@@ -31,9 +34,23 @@ const client = createClient({
   ]
 });
 
-const query = `
+const metricQuery = `
   {
     getMetrics
+  }
+`;
+
+const multipleMetrics = `
+  query MultipleMeasurements ($input: [MeasurementQuery]) {
+    getMultipleMeasurements(input: $input) {
+      metric
+      measurements {
+        at
+        value
+        metric
+        unit
+      }
+    }
   }
 `;
 
@@ -48,42 +65,47 @@ const subscriptionQuery = `
   }
 `;
 
-const MetricList = () => {
-  const [metrics, setMetrics] = useState([]);
+const Metrics = () => {
+  const [metricList, setMetricList] = useState([]);
+  const [metricData, setMetricData] = useState([]);
   
-  const [result] = useQuery({
-    query,
+  const [listResults] = useQuery({
+    query: metricQuery,
     variables: {}
   });
   
-  const {fetching, data, error} = result;
+  const [multiResults] = useQuery({
+    query: multipleMetrics,
+    variables: {
+      "input": [{"metricName": "flareTemp", "after": now.getTime() - 300000}, {"metricName": "oilTemp"}]
+    }
+  });
+  
+  console.log(multiResults.data);
+  
+  // const {fetching, data, error} = listResults;
 
-  if(fetching){
+  if(listResults.fetching){
     return <div>Loading...</div>;
   }
   
-  if(error){
-    return <div>{error}</div>;
+  if(listResults.error){
+    return <div>{listResults.error}</div>;
   }
-  
-  const renderSelector = () => {
-    return <div>hi</div>;
-  };
-  
-  console.log(metrics);
   
   return (
     <div>
       <div>
-        {data.getMetrics.map((metric, index) => <div key={index}>{metric}</div>)}
-        {renderSelector()}
-        <MetricSelect metricList={data.getMetrics} selectedMetrics={metrics} setMetrics={setMetrics} />
+        {listResults.data.getMetrics.map((metric, index) => <div key={index}>{metric}</div>)}
+        <MetricSelect metricList={listResults.data.getMetrics} selectedMetrics={metricList} setMetrics={setMetricList} />
+        <MetricChart selectedMetrics={metricList} />
+        <Chip label="Deletable" variant="outlined" />
       </div>
     </div>
   );
 };
 
-const MetricChart = () => {
+const MetricChart = (props) => {
   
   const [result] = useSubscription({ query: subscriptionQuery });
   
@@ -93,10 +115,16 @@ const MetricChart = () => {
     return <div>Error loading subscription.</div>;
   }
   
-  console.log(data);
+  // console.log(data);
   
   return (
-    <div>Live Data:</div>
+    <div>
+      <div>Live Data:</div>
+      {props.selectedMetrics.map((metric, index) => {
+        return <div key={index}>{metric}</div>;
+        }
+      )}
+    </div>
   );
 };
 
@@ -105,8 +133,7 @@ export default () => {
   return (
     <div>
       <Provider value={client}>
-        <MetricList />
-        <MetricChart />
+        <Metrics />
       </Provider>
     </div>
   );
