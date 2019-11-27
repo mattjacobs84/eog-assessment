@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-// import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Provider, createClient, useQuery, useSubscription, defaultExchanges, subscriptionExchange } from 'urql';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 // import Card from '@material-ui/core/Card';
@@ -67,13 +67,16 @@ const subscriptionQuery = `
 
 const Metrics = () => {
   const [metricList, setMetricList] = useState([]);
-  const [metricData, setMetricData] = useState([]);
+  // const [metricData, setMetricData] = useState([]);
   
   const [listResults] = useQuery({
     query: metricQuery,
     variables: {}
   });
   
+  const storeTest = useSelector(state => state);
+  console.log(storeTest);
+
   const [multiResults] = useQuery({
     query: multipleMetrics,
     variables: {
@@ -83,7 +86,15 @@ const Metrics = () => {
   
   console.log(multiResults.data);
   
-  // const {fetching, data, error} = listResults;
+  const dispatch = useDispatch();
+  
+  useEffect(() => {
+    if(listResults.data){
+      console.log("Dispatched in useEffect.");
+      dispatch({  type: 'METRIC_LIST', payload: listResults.data.getMetrics});
+      dispatch({  type: 'METRIC_UPDATE', payload: [1, 2, 3]});
+    }
+  }, [listResults.data]);
 
   if(listResults.fetching){
     return <div>Loading...</div>;
@@ -93,6 +104,7 @@ const Metrics = () => {
     return <div>{listResults.error}</div>;
   }
   
+
   return (
     <div>
       <div>
@@ -106,7 +118,6 @@ const Metrics = () => {
 };
 
 const MetricChart = (props) => {
-  
   const [result] = useSubscription({ query: subscriptionQuery });
   
   const {data, error} = result;
