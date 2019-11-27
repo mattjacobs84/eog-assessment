@@ -1,4 +1,5 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -49,8 +50,13 @@ export default function MultipleSelect(props) {
   const classes = useStyles();
   // const theme = useTheme();
 
+  const dispatch = useDispatch();
+  
+  const selected = useSelector(state => state.metrics.metricSelect);
+  const metricList = useSelector(state => state.metrics.metricList);
+  console.log(selected);
   const handleChange = event => {
-    props.setMetrics(event.target.value);
+    dispatch({ type: 'METRIC_SELECT', payload: event.target.value  });
   };
 
   return (
@@ -61,7 +67,7 @@ export default function MultipleSelect(props) {
           labelId="chip-label"
           id="mutiple-chip"
           multiple
-          value={props.selectedMetrics}
+          value={selected}
           onChange={handleChange}
           input={<Input id="select-multiple-chip" />}
           renderValue={selected => (
@@ -73,7 +79,7 @@ export default function MultipleSelect(props) {
           )}
           MenuProps={MenuProps}
         >
-          {props.metricList.map(metric => (
+          {metricList.map(metric => (
             <MenuItem key={metric} value={metric}>
               {metric}
             </MenuItem>

@@ -66,7 +66,7 @@ const subscriptionQuery = `
 `;
 
 const Metrics = () => {
-  const [metricList, setMetricList] = useState([]);
+  // const [metricList, setMetricList] = useState([]);
   // const [metricData, setMetricData] = useState([]);
   
   const [listResults] = useQuery({
@@ -74,13 +74,22 @@ const Metrics = () => {
     variables: {}
   });
   
-  const storeTest = useSelector(state => state);
-  console.log(storeTest);
+  const dataStore = useSelector(state => state);
+  console.log(dataStore);
+  
+  const time = now.getTime() - 300000;
 
   const [multiResults] = useQuery({
     query: multipleMetrics,
     variables: {
-      "input": [{"metricName": "flareTemp", "after": now.getTime() - 300000}, {"metricName": "oilTemp"}]
+      "input": [
+        {"metricName": "injValveOpen", "after": time}, 
+        {"metricName": "oilTemp", "after": time},
+        {"metricName": "tubingPressure", "after": time},
+        {"metricName": "flareTemp", "after": time},
+        {"metricName": "casingPressure", "after": time},
+        {"metricName": "waterTemp", "after": time}
+      ]
     }
   });
   
@@ -90,11 +99,17 @@ const Metrics = () => {
   
   useEffect(() => {
     if(listResults.data){
-      console.log("Dispatched in useEffect.");
-      dispatch({  type: 'METRIC_LIST', payload: listResults.data.getMetrics});
-      dispatch({  type: 'METRIC_UPDATE', payload: [1, 2, 3]});
+      dispatch({  type: 'METRIC_LIST', payload: listResults.data.getMetrics });
+      dispatch({  type: 'METRIC_UPDATE', payload: [1, 2, 3] });
     }
   }, [listResults.data]);
+  
+  useEffect(() => {
+    if(multiResults.data) {
+      console.log("dispatch data")
+      dispatch({ type: 'METRIC_DATA', payload: multiResults.data.getMultipleMeasurements });
+    }
+  }, [multiResults.data]);
 
   if(listResults.fetching){
     return <div>Loading...</div>;
@@ -104,13 +119,14 @@ const Metrics = () => {
     return <div>{listResults.error}</div>;
   }
   
-
+  const selectedMetrics = dataStore.metrics.metricList;
+  
   return (
     <div>
       <div>
-        {listResults.data.getMetrics.map((metric, index) => <div key={index}>{metric}</div>)}
-        <MetricSelect metricList={listResults.data.getMetrics} selectedMetrics={metricList} setMetrics={setMetricList} />
-        <MetricChart selectedMetrics={metricList} />
+        {dataStore.metrics.metricList.map((metric, index) => <div key={index}>{metric}</div>)}
+        <MetricSelect />
+        <MetricChart selectedMetrics={selectedMetrics} />
         <Chip label="Deletable" variant="outlined" />
       </div>
     </div>
