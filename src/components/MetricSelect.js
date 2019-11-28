@@ -54,7 +54,7 @@ export default function MultipleSelect(props) {
   
   const selected = useSelector(state => state.metrics.metricSelect);
   const metricList = useSelector(state => state.metrics.metricList);
-  console.log(selected);
+
   const handleChange = event => {
     dispatch({ type: 'METRIC_SELECT', payload: event.target.value  });
   };

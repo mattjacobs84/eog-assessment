@@ -66,17 +66,13 @@ const subscriptionQuery = `
 `;
 
 const Metrics = () => {
-  // const [metricList, setMetricList] = useState([]);
-  // const [metricData, setMetricData] = useState([]);
-  
   const [listResults] = useQuery({
     query: metricQuery,
     variables: {}
   });
   
-  const dataStore = useSelector(state => state);
-  console.log(dataStore);
-  
+  const selectedMetrics = useSelector(state => state.metrics.metricList);
+
   const time = now.getTime() - 300000;
 
   const [multiResults] = useQuery({
@@ -93,20 +89,16 @@ const Metrics = () => {
     }
   });
   
-  console.log(multiResults.data);
-  
   const dispatch = useDispatch();
   
   useEffect(() => {
     if(listResults.data){
       dispatch({  type: 'METRIC_LIST', payload: listResults.data.getMetrics });
-      dispatch({  type: 'METRIC_UPDATE', payload: [1, 2, 3] });
     }
   }, [listResults.data]);
   
   useEffect(() => {
     if(multiResults.data) {
-      console.log("dispatch data")
       dispatch({ type: 'METRIC_DATA', payload: multiResults.data.getMultipleMeasurements });
     }
   }, [multiResults.data]);
@@ -119,12 +111,10 @@ const Metrics = () => {
     return <div>{listResults.error}</div>;
   }
   
-  const selectedMetrics = dataStore.metrics.metricList;
-  
   return (
     <div>
       <div>
-        {dataStore.metrics.metricList.map((metric, index) => <div key={index}>{metric}</div>)}
+        {selectedMetrics.map((metric, index) => <div key={index}>{metric}</div>)}
         <MetricSelect />
         <MetricChart selectedMetrics={selectedMetrics} />
         <Chip label="Deletable" variant="outlined" />
@@ -138,12 +128,23 @@ const MetricChart = (props) => {
   
   const {data, error} = result;
   
+  const updated = useSelector(state => state.metrics.metricUpdate);
+  console.log(updated);
+  
+  const dispatch = useDispatch();
+  
+  useEffect(() => {
+    if(data){
+      const update = data.newMeasurement;
+      
+      dispatch({ type: 'METRIC_UPDATE', payload: update  });
+    }
+  }, [data]);
+  
   if(error){
     return <div>Error loading subscription.</div>;
   }
-  
-  // console.log(data);
-  
+
   return (
     <div>
       <div>Live Data:</div>

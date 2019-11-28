@@ -18,7 +18,12 @@ const metrics = createSlice({
             state.metricData = action.payload;
         },
         metricUpdate: (state, action) => {
-            state.metricUpdate = action.payload;
+            const update = state.metricData.find((element, index) => {
+                return element.metric === action.payload.metric;
+            });
+            update.measurements.push(action.payload.metric);
+            update.measurements.shift();
+            state.metricUpdate = update;
         },
         metricSelect: (state, action) => {
             state.metricSelect = action.payload;

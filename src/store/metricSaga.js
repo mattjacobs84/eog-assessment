@@ -8,7 +8,7 @@ function* metricData(action) {
     yield put({ type: "metrics/metricData", payload: action.payload });
 }
 
-function* updateMetrics(action) {
+function* metricUpdate(action) {
     yield put({ type: "metrics/metricUpdate", payload: action.payload });
 }
 
@@ -19,6 +19,6 @@ function* metricSelect(action) {
 export default function* metricList() {
     yield takeLatest('METRIC_LIST', updateMetricList);
     yield takeLatest('METRIC_DATA', metricData);
-    yield takeLatest('METRIC_UPDATE', updateMetrics);
+    yield takeLatest('METRIC_UPDATE', metricUpdate);
     yield takeLatest('METRIC_SELECT', metricSelect);
 }
