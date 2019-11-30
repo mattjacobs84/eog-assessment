@@ -37,18 +37,8 @@ const MenuProps = {
   },
 };
 
-// function getStyles(name, metricName, theme) {
-//   return {
-//     fontWeight:
-//       metricName.indexOf(name) === -1
-//         ? theme.typography.fontWeightRegular
-//         : theme.typography.fontWeightMedium,
-//   };
-// }
-
 export default function MultipleSelect(props) {
   const classes = useStyles();
-  // const theme = useTheme();
 
   const dispatch = useDispatch();
   

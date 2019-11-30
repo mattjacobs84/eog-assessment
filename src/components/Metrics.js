@@ -2,20 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Provider, createClient, useQuery, useSubscription, defaultExchanges, subscriptionExchange } from 'urql';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
-// import Card from '@material-ui/core/Card';
-// import CardHeader from './CardHeader';
-// import Typography from '@material-ui/core/Typography';
-// import CardContent from '@material-ui/core/CardContent';
-// import List from '@material-ui/core/List';
-// import ListItem from '@material-ui/core/ListItem';
-// import ListItemText from '@material-ui/core/ListItemText';
-// import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import MetricSelect from './MetricSelect';
-import Chip from './Chip';
+import MetricCard from './MetricCard';
 
-// const useStyles = makeStyles({
-
-// });
+const useStyles = makeStyles({
+  container: {
+    margin: 20
+  }
+});
 
 const now = new Date();
 
@@ -71,9 +66,13 @@ const Metrics = () => {
     variables: {}
   });
   
-  const selectedMetrics = useSelector(state => state.metrics.metricList);
+  const selectedMetrics = useSelector(state => state.metrics.metricSelect);
 
   const time = now.getTime() - 300000;
+  
+  const inputVariables = selectedMetrics.map(metric => {
+    return {"metricName": metric, "after": time};
+  });
 
   const [multiResults] = useQuery({
     query: multipleMetrics,
@@ -88,6 +87,17 @@ const Metrics = () => {
       ]
     }
   });
+  
+  //   const inputVariables = selectedMetrics.map(metric => {
+  //   return {"metricName": metric, "after": time};
+  // });
+
+  // const [multiResults] = useQuery({
+  //   query: multipleMetrics,
+  //   variables: {
+  //     "input": inputVariables
+  //   }
+  // });
   
   const dispatch = useDispatch();
   
@@ -114,10 +124,8 @@ const Metrics = () => {
   return (
     <div>
       <div>
-        {selectedMetrics.map((metric, index) => <div key={index}>{metric}</div>)}
         <MetricSelect />
         <MetricChart selectedMetrics={selectedMetrics} />
-        <Chip label="Deletable" variant="outlined" />
       </div>
     </div>
   );
@@ -127,19 +135,24 @@ const MetricChart = (props) => {
   const [result] = useSubscription({ query: subscriptionQuery });
   
   const {data, error} = result;
+  // console.log(data);
   
   const updated = useSelector(state => state.metrics.metricUpdate);
-  console.log(updated);
+  // console.log(updated);
   
   const dispatch = useDispatch();
   
   useEffect(() => {
     if(data){
       const update = data.newMeasurement;
-      
+
       dispatch({ type: 'METRIC_UPDATE', payload: update  });
     }
   }, [data]);
+  
+  if(!data){
+    return <div>Loading...</div>;
+  }
   
   if(error){
     return <div>Error loading subscription.</div>;
@@ -148,21 +161,19 @@ const MetricChart = (props) => {
   return (
     <div>
       <div>Live Data:</div>
-      {props.selectedMetrics.map((metric, index) => {
-        return <div key={index}>{metric}</div>;
-        }
-      )}
+      <MetricCard data={data.newMeasurement} />
     </div>
   );
 };
 
 export default () => {
-  // const classes = useStyles();
+  const classes = useStyles();
+  
   return (
-    <div>
-      <Provider value={client}>
+    <Provider value={client}>
+      <div className={classes.container}>
         <Metrics />
-      </Provider>
-    </div>
+      </div>
+    </Provider>
   );
 };
