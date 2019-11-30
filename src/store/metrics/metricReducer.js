@@ -12,7 +12,31 @@ const metrics = createSlice({
     initialState,
     reducers: {
         metricList: (state, action) => {
-            state.metricList = action.payload; 
+            const namedMetrics = action.payload.map(metric => {
+                console.log(metric);
+                if(metric === 'injValveOpen'){
+                    return {metric: metric, name: "Injector Valve Open"};
+                }                
+                if(metric === 'oilTemp'){
+                    return {metric: metric, name: "Oil Temperature"};
+                }                
+                if(metric === 'tubingPressure'){
+                    return {metric: metric, name: "Tubing Pressure"};
+                }                
+                if(metric === 'flareTemp'){
+                    return {metric: metric, name: "Flare Temperature"};
+                }
+                if(metric === 'casingPressure'){
+                    return {metric: metric, name: "Casing Pressure"};
+                }
+                if(metric === 'waterTemp'){
+                    return {metric: metric, name: "Water Temperature"};
+                }
+                return null;
+            })
+            state.metricList = namedMetrics; 
+            console.log(namedMetrics);
+            // state.metricList = action.payload; 
         },
         metricData: (state, action) => {
             state.metricData = action.payload;

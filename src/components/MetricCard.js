@@ -17,6 +17,7 @@ const MetricCard = ({ data }) => {
     const classes = useStyles();
     const cardData = useSelector(state => state.metrics.metricData);
     const selected = useSelector(state => state.metrics.metricSelect);
+    const metricList = useSelector(state => state.metrics.metricList);
 
     const renderCard = () => {
       return selected.map(metric => {
@@ -26,7 +27,7 @@ const MetricCard = ({ data }) => {
                 return (
                     <Grid key={item.metric} item xs={3}>
                         <Paper className={classes.paper}>
-                            <div>{item.metric}</div>
+                            <div>{metricList.find(metric => metric.metric === item.metric).name}</div>
                             <div>{item.measurements[itemIndex].value} {item.measurements[itemIndex].unit}</div>
                         </Paper>
                     </Grid>

@@ -37,7 +37,7 @@ const MenuProps = {
   },
 };
 
-export default function MultipleSelect(props) {
+export default function MetricSelect(props) {
   const classes = useStyles();
 
   const dispatch = useDispatch();
@@ -63,15 +63,15 @@ export default function MultipleSelect(props) {
           renderValue={selected => (
             <div className={classes.chips}>
               {selected.map(value => (
-                <Chip key={value} label={value} className={classes.chip} />
+                <Chip key={value} label={metricList.find(metric => metric.metric === value).name} className={classes.chip} />
               ))}
             </div>
           )}
           MenuProps={MenuProps}
         >
-          {metricList.map(metric => (
-            <MenuItem key={metric} value={metric}>
-              {metric}
+          {metricList.map((metric, index) => (
+            <MenuItem key={index} value={metric.metric}>
+              {metric.name}
             </MenuItem>
           ))}
         </Select>
