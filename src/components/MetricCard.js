@@ -13,7 +13,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const MetricCard = ({ data }) => {
+const MetricCard = () => {
     const classes = useStyles();
     const cardData = useSelector(state => state.metrics.metricData);
     const selected = useSelector(state => state.metrics.metricSelect);

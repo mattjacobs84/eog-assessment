@@ -5,6 +5,7 @@ import { SubscriptionClient } from 'subscriptions-transport-ws';
 import { makeStyles } from '@material-ui/core/styles';
 import MetricSelect from './MetricSelect';
 import MetricCard from './MetricCard';
+import MetricChart from './MetricChart';
 
 const useStyles = makeStyles({
   container: {
@@ -60,6 +61,7 @@ const subscriptionQuery = `
   }
 `;
 
+
 const Metrics = () => {
   const [listResults] = useQuery({
     query: metricQuery,
@@ -70,9 +72,9 @@ const Metrics = () => {
 
   const time = now.getTime() - 300000;
   
-  const inputVariables = selectedMetrics.map(metric => {
-    return {"metricName": metric, "after": time};
-  });
+  // const inputVariables = selectedMetrics.map(metric => {
+  //   return {"metricName": metric, "after": time};
+  // });
 
   const [multiResults] = useQuery({
     query: multipleMetrics,
@@ -101,6 +103,20 @@ const Metrics = () => {
   
   const dispatch = useDispatch();
   
+const [result] = useSubscription({ query: subscriptionQuery });
+  
+  const {data, error} = result;
+
+
+  
+  useEffect(() => {
+    if(data){
+      const update = data.newMeasurement;
+
+      dispatch({ type: 'METRIC_UPDATE', payload: update  });
+    }
+  }, [data]);
+  
   useEffect(() => {
     if(listResults.data){
       dispatch({  type: 'METRIC_LIST', payload: listResults.data.getMetrics });
@@ -112,6 +128,14 @@ const Metrics = () => {
       dispatch({ type: 'METRIC_DATA', payload: multiResults.data.getMultipleMeasurements });
     }
   }, [multiResults.data]);
+  
+if(!data){
+    return <div>Loading...</div>;
+  }
+  
+  if(error){
+    return <div>Error loading subscription.</div>;
+  }
 
   if(listResults.fetching){
     return <div>Loading...</div>;
@@ -124,44 +148,10 @@ const Metrics = () => {
   return (
     <div>
       <div>
-        <MetricSelect />
+        <MetricSelect style={{marginBottom: '44px'}}/>
+        <MetricCard />
         <MetricChart selectedMetrics={selectedMetrics} />
       </div>
-    </div>
-  );
-};
-
-const MetricChart = (props) => {
-  const [result] = useSubscription({ query: subscriptionQuery });
-  
-  const {data, error} = result;
-  // console.log(data);
-  
-  const updated = useSelector(state => state.metrics.metricUpdate);
-  // console.log(updated);
-  
-  const dispatch = useDispatch();
-  
-  useEffect(() => {
-    if(data){
-      const update = data.newMeasurement;
-
-      dispatch({ type: 'METRIC_UPDATE', payload: update  });
-    }
-  }, [data]);
-  
-  if(!data){
-    return <div>Loading...</div>;
-  }
-  
-  if(error){
-    return <div>Error loading subscription.</div>;
-  }
-
-  return (
-    <div>
-      <div>Live Data:</div>
-      <MetricCard data={data.newMeasurement} />
     </div>
   );
 };
