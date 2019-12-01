@@ -20,6 +20,7 @@ const MetricCard = () => {
     const metricList = useSelector(state => state.metrics.metricList);
 
     const renderCard = () => {
+        console.log("Card Rendered");
       return selected.map(metric => {
           const item = cardData.find(dataSet => dataSet.metric === metric);
             if(item){

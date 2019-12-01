@@ -9,6 +9,24 @@ import Header from './components/Header';
 import Wrapper from './components/Wrapper';
 import Metrics from './components/Metrics';
 
+import { Provider as URQLProvider, createClient, defaultExchanges, subscriptionExchange } from 'urql';
+import { SubscriptionClient } from 'subscriptions-transport-ws';
+
+const subscriptionClient = new SubscriptionClient(
+'wss://react.eogresources.com/graphql',
+ {}
+);
+
+const client = createClient({
+  url: 'https://react.eogresources.com/graphql',
+  exchanges: [
+    ...defaultExchanges,
+    subscriptionExchange({
+      forwardSubscription: operation => subscriptionClient.request(operation)
+    })
+  ]
+});
+
 const store = createStore();
 const theme = createMuiTheme({
   palette: {
@@ -25,14 +43,18 @@ const theme = createMuiTheme({
 });
 
 const App = () => (
+  
   <MuiThemeProvider theme={theme}>
     <CssBaseline />
       <Provider store={store}>
+        <URQLProvider value={client}>
           <Wrapper>
+          {console.log("App render")}
             <Header />
             <Metrics />
             <ToastContainer />
           </Wrapper>
+        </URQLProvider>
       </Provider>
   </MuiThemeProvider>
 );

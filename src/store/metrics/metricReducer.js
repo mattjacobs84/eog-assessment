@@ -13,7 +13,7 @@ const metrics = createSlice({
     reducers: {
         metricList: (state, action) => {
             const namedMetrics = action.payload.map(metric => {
-                console.log(metric);
+                // console.log(metric);
                 if(metric === 'injValveOpen'){
                     return {metric: metric, name: "Injector Valve Open"};
                 }                
@@ -35,7 +35,7 @@ const metrics = createSlice({
                 return null;
             })
             state.metricList = namedMetrics; 
-            console.log(namedMetrics);
+            // console.log(namedMetrics);
             // state.metricList = action.payload; 
         },
         metricData: (state, action) => {
