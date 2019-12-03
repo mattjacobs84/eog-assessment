@@ -5,7 +5,6 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 
 const useStyles = makeStyles(theme => ({
-
     paper: {
         padding: theme.spacing(2),
         textAlign: 'center',
@@ -20,21 +19,20 @@ const MetricCard = () => {
     const metricList = useSelector(state => state.metrics.metricList);
 
     const renderCard = () => {
-        console.log("Card Rendered");
       return selected.map(metric => {
-          const item = cardData.find(dataSet => dataSet.metric === metric);
-            if(item){
-                const itemIndex = item.measurements.length - 1;
-                return (
-                    <Grid key={item.metric} item xs={3}>
-                        <Paper className={classes.paper}>
-                            <div>{metricList.find(metric => metric.metric === item.metric).name}</div>
-                            <div>{item.measurements[itemIndex].value} {item.measurements[itemIndex].unit}</div>
-                        </Paper>
-                    </Grid>
-                );
-            } 
-            return null;
+        const item = cardData.find(dataSet => dataSet.metric === metric);
+        if(item){
+            const itemIndex = item.measurements.length - 1;
+            return (
+                <Grid key={item.metric} item xs={3}>
+                    <Paper className={classes.paper}>
+                        <div>{metricList.find(metric => metric.metric === item.metric).name}</div>
+                        <div>{item.measurements[itemIndex].value} {item.measurements[itemIndex].unit}</div>
+                    </Paper>
+                </Grid>
+            );
+        } 
+        return null;
       });
     };
    

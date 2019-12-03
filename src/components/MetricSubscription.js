@@ -18,14 +18,11 @@ const MetricSubscription = () => {
 
     const [result] = useSubscription({ query: subscriptionQuery });
     
-    console.log("Subscription component");
-    
     const {data, error} = result;
 
     useEffect(() => {
     if(data){
       const update = data.newMeasurement;
-    
       dispatch({ type: 'METRIC_UPDATE', payload: update  });
     }
     }, [data]);
@@ -35,7 +32,6 @@ const MetricSubscription = () => {
     }
     
     return null;
-    
 };
 
 export default MetricSubscription;

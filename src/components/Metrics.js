@@ -61,14 +61,12 @@ const Metrics = () => {
   
   useEffect(() => {
     if(listResults.data){
-      console.log("List Results Dispatch");
       dispatch({  type: 'METRIC_LIST', payload: listResults.data.getMetrics });
     }
   }, [listResults.data]);
   
   useEffect(() => {
     if(multiResults.data) {
-      console.log("MULTI DISPATCH");
       dispatch({ type: 'METRIC_DATA', payload: multiResults.data.getMultipleMeasurements });
     }
   }, [multiResults.data]);
@@ -80,12 +78,11 @@ const Metrics = () => {
   if(listResults.error){
     return <div>{listResults.error}</div>;
   }
-  console.log("Render Metrics Component");
+  
   return (
     <div>
       <div>
         <MetricSelect style={{marginBottom: '44px'}}/>
-
       </div>
     </div>
   );
