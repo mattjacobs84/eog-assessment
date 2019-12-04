@@ -41,7 +41,7 @@ const Metrics = () => {
     variables: {}
   });
   
-  const time = now.getTime() - 300000;
+  const time = now.getTime() - 1800000;
   
   const [multiResults] = useQuery({
     query: multipleMetrics,
@@ -63,13 +63,13 @@ const Metrics = () => {
     if(listResults.data){
       dispatch({  type: 'METRIC_LIST', payload: listResults.data.getMetrics });
     }
-  }, [listResults.data]);
+  }, [listResults.data, dispatch]);
   
   useEffect(() => {
     if(multiResults.data) {
       dispatch({ type: 'METRIC_DATA', payload: multiResults.data.getMultipleMeasurements });
     }
-  }, [multiResults.data]);
+  }, [multiResults.data, dispatch]);
 
   if(listResults.fetching){
     return <div>Loading...</div>;

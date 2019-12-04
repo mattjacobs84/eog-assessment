@@ -14,7 +14,7 @@ import { SubscriptionClient } from 'subscriptions-transport-ws';
 
 const subscriptionClient = new SubscriptionClient(
 'wss://react.eogresources.com/graphql',
- {}
+ {reconnect: true}
 );
 
 const client = createClient({
@@ -43,13 +43,11 @@ const theme = createMuiTheme({
 });
 
 const App = () => (
-  
   <MuiThemeProvider theme={theme}>
     <CssBaseline />
       <Provider store={store}>
         <URQLProvider value={client}>
           <Wrapper>
-          {console.log("App render")}
             <Header />
             <Metrics />
             <ToastContainer />

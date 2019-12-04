@@ -25,7 +25,7 @@ const MetricSubscription = () => {
       const update = data.newMeasurement;
       dispatch({ type: 'METRIC_UPDATE', payload: update  });
     }
-    }, [data]);
+    }, [data, dispatch]);
     
     if(error){
         return <div>{error}</div>;
