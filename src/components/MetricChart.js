@@ -18,7 +18,7 @@ const SpecificChart = ({data, metricList}) => {
         "data": updatedData
       }
     ];
-    console.log(newData);
+
     return (
         <div style={{height: '25vh', width: '100vw'}}>
           {metricTitle}
@@ -38,8 +38,6 @@ const SpecificChart = ({data, metricList}) => {
                   axisBottom={{
                     format: '%H:%M:%S',
                     tickValues: 'every 5 minutes',
-                    // legend: 'time scale',
-                    // legendOffset: -12,
                   }}
                   axisLeft={{
                       orient: 'left',
@@ -50,78 +48,16 @@ const SpecificChart = ({data, metricList}) => {
                       legendOffset: -45,
                       legendPosition: 'middle'
                   }}
-                  // tooltip={() => (
-                  //   <strong style={{ color: 'red' }}>
-                  //     {`${metricTitle}`}: {'fjdklsajkl'}
-                  //   </strong>
-                  // )}
-                  // enableSlices="x"
-                  // yScale={{
-                  //   type: 'linear',
-                    // stacked: boolean('stacked', true),
-                  // }}
-                    //         tooltip={({ slice }) => {
-                    // return (
-                    //   <div
-                    //     style={{
-                    //       background: 'white',
-                    //       padding: '9px 12px',
-                    //       border: '1px solid #ccc',
-                    //     }}
-                    //   >
-                    //     <div>x: {slice.id}</div>
-                    //     {slice.points.map(point => (
-                    //       <div
-                    //         key={point.id}
-                    //         style={{
-                    //           color: point.serieColor,
-                    //           padding: '3px 0',
-                    //         }}
-                    //       >
-                  //           <strong>{point.serieId}</strong> [{point.data.yFormatted}]
-                  //         </div>
-                  //       ))}
-                  //     </div>
-                  //   );
-                  // }}
+                  tooltip={(props) => {
+                  // console.log(props)
+                    return(
+                      `${props.point.serieId}: ${props.point.data.y} ${data[0].unit}`
+                    );
+                  }}
                   colors={{ scheme: 'nivo' }}
                   enablePoints={false}
-                  // pointSize={10}
-                  // pointColor={{ theme: 'background' }}
-                  // pointBorderWidth={2}
-                  // pointBorderColor={{ from: 'serieColor' }}
-                  // pointLabel="y"
-                  // pointLabelYOffset={-12}
-                  enableCrosshair={false}
+                  enableCrosshair={true}
                   useMesh={true}
-                  // enableSlices="x"
-
-                  // legends={[
-                  //     {
-                  //         anchor: 'bottom-right',
-                  //         direction: 'column',
-                  //         justify: false,
-                  //         translateX: 100,
-                  //         translateY: 0,
-                  //         itemsSpacing: 0,
-                  //         itemDirection: 'left-to-right',
-                  //         itemWidth: 80,
-                  //         itemHeight: 20,
-                  //         itemOpacity: 0.75,
-                  //         symbolSize: 12,
-                  //         symbolShape: 'circle',
-                  //         symbolBorderColor: 'rgba(0, 0, 0, .5)',
-                  //         effects: [
-                  //             {
-                  //                 on: 'hover',
-                  //                 style: {
-                  //                     itemBackground: 'rgba(0, 0, 0, .03)',
-                  //                     itemOpacity: 1
-                  //                 }
-                  //             }
-                  //         ]
-                  //     }
-                  // ]}
               />
         </div>
     );
