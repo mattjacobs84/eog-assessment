@@ -18,13 +18,30 @@ const SpecificChart = ({data, metricList}) => {
         "data": updatedData
       }
     ];
+    
+    const minMax = (updatedData) => {
+      let min = updatedData[0].y, max = updatedData[0].y;
+    
+      for (let i = 1; i < updatedData.length; i++) {
+        let value = updatedData[i].y;
+        min = (value < min) ? value : min;
+        max = (value > max) ? value : max;
+      }
+      return [min, max];
+    };
+    
+    const [dataMin, dataMax] = minMax(updatedData);
+    
+    const unit = data[0].unit;
 
     return (
-        <div style={{height: '25vh', width: '100vw'}}>
-          {metricTitle}
+        <div style={{height: '25vh', width: '100vw', minHeight: '200px', fontFamily: 'roboto'}}>
+          <h3>{metricTitle}</h3>
+          <p>{'30 Minute Min: ' + dataMin + ' ' + unit}</p>
+          <p>{'30 Minute Max: ' + dataMax + ' ' + unit}</p>
           <ResponsiveLine
                   data={newData}
-                  margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+                  margin={{ top: 10, right: 110, bottom: 10, left: 60 }}
                   xScale={{
                       type: 'time',
                       format: '%H:%M:%S',
@@ -32,7 +49,7 @@ const SpecificChart = ({data, metricList}) => {
                       useUTC: false
                   }}
                   xFormat="time:%H:%M:%S"
-                  yScale={{ type: 'linear', max: 'auto', min: 'auto' }}
+                  yScale={{ type: 'linear', max: dataMax*1.1, min: dataMin*0.9 }}
                   axisTop={null}
                   axisRight={null}
                   axisBottom={{
@@ -44,14 +61,15 @@ const SpecificChart = ({data, metricList}) => {
                       tickSize: 5,
                       tickPadding: 5,
                       tickRotation: 0,
-                      legend: `${data[0].unit}`,
+                      legend: `${unit}`,
                       legendOffset: -45,
-                      legendPosition: 'middle'
+                      legendPosition: 'middle',
+                      tickValues: 5
                   }}
                   tooltip={(props) => {
                   // console.log(props)
                     return(
-                      `${props.point.serieId}: ${props.point.data.y} ${data[0].unit}`
+                      `${props.point.serieId}: ${props.point.data.y} ${unit}`
                     );
                   }}
                   colors={{ scheme: 'nivo' }}
