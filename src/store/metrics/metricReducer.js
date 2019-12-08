@@ -44,6 +44,7 @@ const metrics = createSlice({
                 const update = state.metricData.find((element, index) => {
                     return element.metric === action.payload.metric;
                 });
+                // console.log(action.payload);
                 update.measurements.push(action.payload);
                 update.measurements.shift();
                 state.metricUpdate = update;

@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { ResponsiveLine } from '@nivo/line';
 
 const SpecificChart = ({data, metricList}) => {
-  
   const eachChart = useMemo(() => {
     const metricTitle = metricList.find(item => item.metric === data[0].metric).name;
     const updatedData = data.map(item => {
@@ -12,7 +11,7 @@ const SpecificChart = ({data, metricList}) => {
       return {"x": `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`, "y": item.value};
     });
     
-    const newData = [
+    const chartData = [
       {
         "id": `${metricTitle}`,
         "data": updatedData
@@ -35,49 +34,53 @@ const SpecificChart = ({data, metricList}) => {
     const unit = data[0].unit;
 
     return (
-        <div style={{height: '25vh', width: '100vw', minHeight: '200px', fontFamily: 'roboto'}}>
-          <h3>{metricTitle}</h3>
-          <p>{'30 Minute Min: ' + dataMin + ' ' + unit}</p>
-          <p>{'30 Minute Max: ' + dataMax + ' ' + unit}</p>
-          <ResponsiveLine
-                  data={newData}
-                  margin={{ top: 10, right: 110, bottom: 10, left: 60 }}
-                  xScale={{
-                      type: 'time',
-                      format: '%H:%M:%S',
-                      precision: 'second',
-                      useUTC: false
-                  }}
-                  xFormat="time:%H:%M:%S"
-                  yScale={{ type: 'linear', max: dataMax*1.1, min: dataMin*0.9 }}
-                  axisTop={null}
-                  axisRight={null}
-                  axisBottom={{
+      <div>
+        <h3>{metricTitle}</h3>
+        <p>{'30 Minute Min: ' + dataMin + ' ' + unit}</p>
+        <p>{'30 Minute Max: ' + dataMax + ' ' + unit}</p>
+        <div style={{height: '350px', width: '100vw', minHeight: '200px', fontFamily: 'roboto'}}>
+        <ResponsiveLine
+                data={chartData}
+                margin={{ top: 10, right: 110, bottom: 50, left: 60 }}
+                xScale={{
+                    type: 'time',
                     format: '%H:%M:%S',
-                    tickValues: 'every 5 minutes',
-                  }}
-                  axisLeft={{
-                      orient: 'left',
-                      tickSize: 5,
-                      tickPadding: 5,
-                      tickRotation: 0,
-                      legend: `${unit}`,
-                      legendOffset: -45,
-                      legendPosition: 'middle',
-                      tickValues: 5
-                  }}
-                  tooltip={(props) => {
-                  // console.log(props)
-                    return(
-                      `${props.point.serieId}: ${props.point.data.y} ${unit}`
-                    );
-                  }}
-                  colors={{ scheme: 'nivo' }}
-                  enablePoints={false}
-                  enableCrosshair={true}
-                  useMesh={true}
-              />
+                    precision: 'second',
+                    useUTC: false
+                }}
+                xFormat="time:%H:%M:%S"
+                yScale={{ type: 'linear', max: dataMax*1.1, min: dataMin*0.9 }}
+                axisTop={null}
+                axisRight={null}
+                axisBottom={{
+                  format: '%H:%M:%S',
+                  tickValues: 'every 5 minutes',
+                }}
+                axisLeft={{
+                    orient: 'left',
+                    tickSize: 5,
+                    tickPadding: 5,
+                    tickRotation: 0,
+                    legend: `${unit}`,
+                    legendOffset: -45,
+                    legendPosition: 'middle',
+                    tickValues: 5
+                }}
+                tooltip={(props) => {
+                // console.log(props)
+                  return(
+                    <div>
+                      {props.point.serieId}: {props.point.data.y} {unit}
+                    </div>
+                  );
+                }}
+                colors={{ scheme: 'nivo' }}
+                enablePoints={false}
+                enableCrosshair={true}
+                useMesh={true}
+            />
         </div>
+      </div>
     );
   }, [data, metricList]);
   
