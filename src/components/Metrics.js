@@ -9,8 +9,8 @@ import MetricSubscription from './MetricSubscription';
 
 const useStyles = makeStyles({
   container: {
-    margin: 20
-  }
+    margin: 20,
+  },
 });
 
 const metricQuery = `
@@ -38,55 +38,53 @@ const now = new Date();
 const Metrics = () => {
   const [listResults] = useQuery({
     query: metricQuery,
-    variables: {}
+    variables: {},
   });
-  
+
   const time = now.getTime() - 1800000;
-  
+
   const [multiResults] = useQuery({
     query: multipleMetrics,
     variables: {
-      "input": [
-        {"metricName": "injValveOpen", "after": time}, 
-        {"metricName": "oilTemp", "after": time},
-        {"metricName": "tubingPressure", "after": time},
-        {"metricName": "flareTemp", "after": time},
-        {"metricName": "casingPressure", "after": time},
-        {"metricName": "waterTemp", "after": time}
-      ]
-    }
+      input: [
+        { metricName: 'injValveOpen', after: time },
+        { metricName: 'oilTemp', after: time },
+        { metricName: 'tubingPressure', after: time },
+        { metricName: 'flareTemp', after: time },
+        { metricName: 'casingPressure', after: time },
+        { metricName: 'waterTemp', after: time },
+      ],
+    },
   });
-  
+
   const dispatch = useDispatch();
-  
+
   useEffect(() => {
-    if(listResults.data){
-      dispatch({  type: 'METRIC_LIST', payload: listResults.data.getMetrics });
+    if (listResults.data) {
+      dispatch({ type: 'METRIC_LIST', payload: listResults.data.getMetrics });
     }
   }, [listResults.data, dispatch]);
-  
+
   useEffect(() => {
-    if(multiResults.data) {
+    if (multiResults.data) {
       dispatch({ type: 'METRIC_DATA', payload: multiResults.data.getMultipleMeasurements });
     }
   }, [multiResults.data, dispatch]);
 
-  if(listResults.fetching){
+  if (listResults.fetching) {
     return <div>Loading...</div>;
   }
-  
-  if(listResults.error){
+
+  if (listResults.error) {
     return <div>{listResults.error}</div>;
   }
-  
-  return (
-    <MetricSelect />
-  );
+
+  return <MetricSelect />;
 };
 
 export default () => {
   const classes = useStyles();
-  
+
   return (
     <div className={classes.container}>
       <MetricSubscription />

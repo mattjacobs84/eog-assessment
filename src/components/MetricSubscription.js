@@ -15,24 +15,24 @@ const subscriptionQuery = `
 `;
 
 const MetricSubscription = () => {
-    const metricData = useSelector(state => state.metrics.metricData);
-    const [result] = useSubscription({ query: subscriptionQuery });
-    const {data, error} = result;
-    
-    const dispatch = useDispatch();
+  const metricData = useSelector(state => state.metrics.metricData);
+  const [result] = useSubscription({ query: subscriptionQuery });
+  const { data, error } = result;
 
-    useEffect(() => {
-    if(data && (metricData.length !== 0)){
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (data && metricData.length !== 0) {
       const update = data.newMeasurement;
-      dispatch({ type: 'METRIC_UPDATE', payload: update  });
+      dispatch({ type: 'METRIC_UPDATE', payload: update });
     }
-    }, [data, dispatch, metricData.length]);
-    
-    if(error){
-        return <div>{error}</div>;
-    }
-    
-    return null;
+  }, [data, dispatch, metricData.length]);
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  return null;
 };
 
 export default MetricSubscription;

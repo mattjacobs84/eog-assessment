@@ -17,9 +17,13 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 const useStyles = makeStyles(theme => ({
+  container: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    marginBottom: 20,
+  },
   formControl: {
     minWidth: 200,
-    maxWidth: 750,
   },
   chips: {
     display: 'flex',
@@ -27,7 +31,7 @@ const useStyles = makeStyles(theme => ({
   },
   chip: {
     margin: 2,
-  }
+  },
 }));
 
 const ITEM_HEIGHT = 48;
@@ -36,7 +40,6 @@ const MenuProps = {
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 500,
     },
   },
 };
@@ -46,27 +49,29 @@ export default function MetricSelect(props) {
   const [open, setOpen] = React.useState(false);
 
   const dispatch = useDispatch();
-  
+
   const selected = useSelector(state => state.metrics.metricSelect);
   const metricList = useSelector(state => state.metrics.metricList);
-  
+
   const handleClickOpen = () => {
-      setOpen(true);
-    };
-  
-    const handleClose = () => {
-      setOpen(false);
-    };
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const handleChange = event => {
-    dispatch({ type: 'METRIC_SELECT', payload: event.target.value  });
+    dispatch({ type: 'METRIC_SELECT', payload: event.target.value });
   };
 
   return (
-    <div>
-      <Button onClick={handleClickOpen}>Open select dialog</Button>
+    <div style={{ marginBottom: '15px' }}>
+      <Button onClick={handleClickOpen} variant="contained" color="primary">
+        Select Metrics
+      </Button>
       <Dialog disableBackdropClick disableEscapeKeyDown open={open} onClose={handleClose}>
-        <DialogTitle>Fill the form</DialogTitle>
+        <DialogTitle>Choose Metrics</DialogTitle>
         <DialogContent>
           <form className={classes.container}>
             <FormControl className={classes.formControl}>
@@ -81,7 +86,11 @@ export default function MetricSelect(props) {
                 renderValue={selected => (
                   <div className={classes.chips}>
                     {selected.map(value => (
-                      <Chip key={value} label={metricList.find(metric => metric.metric === value).name} className={classes.chip} />
+                      <Chip
+                        key={value}
+                        label={metricList.find(metric => metric.metric === value).name}
+                        className={classes.chip}
+                      />
                     ))}
                   </div>
                 )}
@@ -89,7 +98,7 @@ export default function MetricSelect(props) {
               >
                 {metricList.map((metric, index) => (
                   <MenuItem key={index} value={metric.metric}>
-                    <Checkbox checked={selected.indexOf(metric.metric) > -1} />
+                    <Checkbox checked={selected.indexOf(metric.metric) > -1} color="primary" />
                     <ListItemText primary={metric.name} />
                   </MenuItem>
                 ))}
@@ -109,39 +118,3 @@ export default function MetricSelect(props) {
     </div>
   );
 }
-
-
-
-
-
-
-  // return (
-  //   <div>
-  //     <FormControl className={classes.formControl}>
-  //       <InputLabel id="chip-label">Select Metrics:</InputLabel>
-  //       <Select
-  //         labelId="chip-label"
-  //         id="mutiple-chip"
-  //         multiple
-  //         value={selected}
-  //         onChange={handleChange}
-  //         input={<Input id="select-multiple-chip" />}
-  //         renderValue={selected => (
-  //           <div className={classes.chips}>
-  //             {selected.map(value => (
-  //               <Chip key={value} label={metricList.find(metric => metric.metric === value).name} className={classes.chip} />
-  //             ))}
-  //           </div>
-  //         )}
-  //         MenuProps={MenuProps}
-  //       >
-  //         {metricList.map((metric, index) => (
-  //           <MenuItem key={index} value={metric.metric}>
-  //             <Checkbox checked={selected.indexOf(metric.metric) > -1} />
-  //             <ListItemText primary={metric.name} />
-  //           </MenuItem>
-  //         ))}
-  //       </Select>
-  //     </FormControl>
-  //   </div>
-  // );
