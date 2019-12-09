@@ -80,11 +80,7 @@ const Metrics = () => {
   }
   
   return (
-    <div>
-      <div>
-        <MetricSelect style={{marginBottom: '44px'}}/>
-      </div>
-    </div>
+    <MetricSelect />
   );
 };
 

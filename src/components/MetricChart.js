@@ -36,8 +36,10 @@ const SpecificChart = ({data, metricList}) => {
     return (
       <div>
         <h3>{metricTitle}</h3>
-        <p>{'30 Minute Min: ' + dataMin + ' ' + unit}</p>
-        <p>{'30 Minute Max: ' + dataMax + ' ' + unit}</p>
+        <div style={{fontSize: '0.8em'}}>
+          <p>{'30 Minute High: ' + dataMax + ' ' + unit}</p>
+          <p>{'30 Minute Low: ' + dataMin + ' ' + unit}</p>
+        </div>
         <div style={{height: '350px', width: '100vw', minHeight: '200px', fontFamily: 'roboto'}}>
         <ResponsiveLine
                 data={chartData}
@@ -67,7 +69,6 @@ const SpecificChart = ({data, metricList}) => {
                     tickValues: 5
                 }}
                 tooltip={(props) => {
-                // console.log(props)
                   return(
                     <div>
                       {props.point.serieId}: {props.point.data.y} {unit}

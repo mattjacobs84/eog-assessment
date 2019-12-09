@@ -5,12 +5,19 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
+import ListItemText from '@material-ui/core/ListItemText';
 import Select from '@material-ui/core/Select';
+import Checkbox from '@material-ui/core/Checkbox';
 import Chip from '@material-ui/core/Chip';
+
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 const useStyles = makeStyles(theme => ({
   formControl: {
-    margin: theme.spacing(5),
     minWidth: 200,
     maxWidth: 750,
   },
@@ -20,10 +27,7 @@ const useStyles = makeStyles(theme => ({
   },
   chip: {
     margin: 2,
-  },
-  noLabel: {
-    marginTop: theme.spacing(3)
-  },
+  }
 }));
 
 const ITEM_HEIGHT = 48;
@@ -39,11 +43,20 @@ const MenuProps = {
 
 export default function MetricSelect(props) {
   const classes = useStyles();
+  const [open, setOpen] = React.useState(false);
 
   const dispatch = useDispatch();
   
   const selected = useSelector(state => state.metrics.metricSelect);
   const metricList = useSelector(state => state.metrics.metricList);
+  
+  const handleClickOpen = () => {
+      setOpen(true);
+    };
+  
+    const handleClose = () => {
+      setOpen(false);
+    };
 
   const handleChange = event => {
     dispatch({ type: 'METRIC_SELECT', payload: event.target.value  });
@@ -51,31 +64,84 @@ export default function MetricSelect(props) {
 
   return (
     <div>
-      <FormControl className={classes.formControl}>
-        <InputLabel id="chip-label">Select Metrics:</InputLabel>
-        <Select
-          labelId="chip-label"
-          id="mutiple-chip"
-          multiple
-          value={selected}
-          onChange={handleChange}
-          input={<Input id="select-multiple-chip" />}
-          renderValue={selected => (
-            <div className={classes.chips}>
-              {selected.map(value => (
-                <Chip key={value} label={metricList.find(metric => metric.metric === value).name} className={classes.chip} />
-              ))}
-            </div>
-          )}
-          MenuProps={MenuProps}
-        >
-          {metricList.map((metric, index) => (
-            <MenuItem key={index} value={metric.metric}>
-              {metric.name}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      <Button onClick={handleClickOpen}>Open select dialog</Button>
+      <Dialog disableBackdropClick disableEscapeKeyDown open={open} onClose={handleClose}>
+        <DialogTitle>Fill the form</DialogTitle>
+        <DialogContent>
+          <form className={classes.container}>
+            <FormControl className={classes.formControl}>
+              <InputLabel id="chip-label">Select Metrics:</InputLabel>
+              <Select
+                labelId="chip-label"
+                id="mutiple-chip"
+                multiple
+                value={selected}
+                onChange={handleChange}
+                input={<Input id="select-multiple-chip" />}
+                renderValue={selected => (
+                  <div className={classes.chips}>
+                    {selected.map(value => (
+                      <Chip key={value} label={metricList.find(metric => metric.metric === value).name} className={classes.chip} />
+                    ))}
+                  </div>
+                )}
+                MenuProps={MenuProps}
+              >
+                {metricList.map((metric, index) => (
+                  <MenuItem key={index} value={metric.metric}>
+                    <Checkbox checked={selected.indexOf(metric.metric) > -1} />
+                    <ListItemText primary={metric.name} />
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </form>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleClose} color="primary">
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
+
+
+
+
+
+
+  // return (
+  //   <div>
+  //     <FormControl className={classes.formControl}>
+  //       <InputLabel id="chip-label">Select Metrics:</InputLabel>
+  //       <Select
+  //         labelId="chip-label"
+  //         id="mutiple-chip"
+  //         multiple
+  //         value={selected}
+  //         onChange={handleChange}
+  //         input={<Input id="select-multiple-chip" />}
+  //         renderValue={selected => (
+  //           <div className={classes.chips}>
+  //             {selected.map(value => (
+  //               <Chip key={value} label={metricList.find(metric => metric.metric === value).name} className={classes.chip} />
+  //             ))}
+  //           </div>
+  //         )}
+  //         MenuProps={MenuProps}
+  //       >
+  //         {metricList.map((metric, index) => (
+  //           <MenuItem key={index} value={metric.metric}>
+  //             <Checkbox checked={selected.indexOf(metric.metric) > -1} />
+  //             <ListItemText primary={metric.name} />
+  //           </MenuItem>
+  //         ))}
+  //       </Select>
+  //     </FormControl>
+  //   </div>
+  // );
